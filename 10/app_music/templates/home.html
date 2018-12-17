@@ -1,0 +1,90 @@
+{% load static %}
+{% load thumbnail %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <!-- Compiled and minified JavaScript -->
+
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <style type="text/css">
+    	@font-face {
+		    font-family: Vazir-FD;
+		    src: url({% static "font/vazir-font-v19.0.0/Farsi-Digits/Vazir-FD.ttf" %});
+		}
+    </style>
+
+	<title>Home</title>
+</head>
+<body>
+	<div class="row">
+		<div class="col s1"></div>
+		<div class="col s7">
+			<div class="card-panel">
+				<div class="center">{{ album.summary }}</div>
+				<hr>
+				<div class="row">
+					<div class="col s4">
+						{% thumbnail album.cover "230x230" crop="center" as im %}
+						    <img src="{{ im.url }}" class="album-cover" width="{{ im.width }}" height="{{ im.height }}" alt='{{ album.title }} {{ album.summary }}'>
+						{% endthumbnail %}
+					</div>
+					<div class="col s8">
+						<h2 class="grey-text text-darken-2 album-title">{{ album.title }}</h2>
+						<div class="grey-text text-darken-1">By {{ album.artist }}</div>
+						<div class="grey-text">Released on {{ album.release_date|date_splitter_1 }}</div>
+
+						<div class="row">
+							<div class="col s1"><div style="margin-top: 7px;">{{ album.rate }}</div></div>
+							<div class="col s11">{{ album.rate|render_rating|safe }}</div>
+						</div>
+
+						<div class="row">
+							<div class="col s12">
+								{% for tag in album.tag_set.all %}
+									{{ tag.title }}{% if not forloop.last %},{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col s12">{{ tracks_count }} track{% if tracks_count != 1 %}s{% endif %}</div>
+						</div>
+
+					</div> <!-- end of col 8m -->
+
+					<div class="row">
+						<div class="col m12">
+					      <table>
+					        <tbody>
+				        	{% for track in tracks %}
+					          <tr>
+					            <td><a href="{{MEDIA_URL}}{{ track.music }}">{{ track.title }}</a></td>
+					            <td><i class="material-icons">file_download</i></td>
+					            <td><i class="material-icons">playlist_add</i></td>
+					          </tr>
+				        	{% endfor %}
+					        </tbody>
+					      </table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col s3">
+			<div class="card-panel"></div>
+		</div>
+		<div class="col s1"></div>
+	</div>
+
+</body>
+</html>

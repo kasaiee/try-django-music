@@ -1,0 +1,137 @@
+{% load static %}
+{% load thumbnail %}
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/player.css' %}">
+    <!-- Compiled and minified JavaScript -->
+
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style type="text/css">
+    	@font-face {
+		    font-family: Vazir-FD;
+		    src: url({% static "font/vazir-font-v19.0.0/Farsi-Digits/Vazir-FD.ttf" %});
+		}
+    </style>
+
+	<title>Home</title>
+</head>
+<body>
+	<div class="row">
+		<div class="col s1"></div>
+		<div class="col s7">
+			<div class="card-panel">
+				<div class="center">{{ album.summary }}</div>
+				<hr>
+				<div class="row">
+					<div class="col s4">
+						{% thumbnail album.cover "230x230" crop="center" as im %}
+						    <img src="{{ im.url }}" class="album-cover" width="{{ im.width }}" height="{{ im.height }}" alt='{{ album.title }} {{ album.summary }}'>
+						{% endthumbnail %}
+					</div>
+					<div class="col s8">
+						<h2 class="grey-text text-darken-2 album-title">{{ album.title }}</h2>
+						<div class="grey-text text-darken-1">By {{ album.artist }}</div>
+						<div class="grey-text">Released on {{ album.release_date|date_splitter_1 }}</div>
+
+						<div class="row">
+							<div class="col s1"><div style="margin-top: 7px;">{{ album.rate }}</div></div>
+							<div class="col s11">{{ album.rate|render_rating|safe }}</div>
+						</div>
+
+						<div class="row">
+							<div class="col s12">
+								{% for tag in album.tag_set.all %}
+									{{ tag.title }}{% if not forloop.last %},{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col s12">{{ tracks_count }} track{% if tracks_count != 1 %}s{% endif %}</div>
+						</div>
+
+					</div> <!-- end of col 8m -->
+
+					<div class="row">
+						  <div class="audio green-audio-player">
+					  <div class="loading">
+					    <div class="spinner"></div>
+					  </div>
+					  <div class="play-pause-btn">  
+					    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 18 24">
+					      <path fill="#566574" fill-rule="evenodd" d="M18 12L0 24V0" class="play-pause-icon" id="playPause"/>
+					    </svg>
+					  </div>
+					  
+					  <div class="controls">
+					    <span class="current-time">0:00</span>
+					    <div class="slider" data-direction="horizontal">
+					      <div class="progress">
+					        <div class="pin" id="progress-pin" data-method="rewind"></div>
+					      </div>
+					    </div>
+					    <span class="total-time">0:00</span>
+					  </div>
+					  
+					  <div class="volume">
+					    <div class="volume-btn">
+					      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+					        <path fill="#566574" fill-rule="evenodd" d="M14.667 0v2.747c3.853 1.146 6.666 4.72 6.666 8.946 0 4.227-2.813 7.787-6.666 8.934v2.76C20 22.173 24 17.4 24 11.693 24 5.987 20 1.213 14.667 0zM18 11.693c0-2.36-1.333-4.386-3.333-5.373v10.707c2-.947 3.333-2.987 3.333-5.334zm-18-4v8h5.333L12 22.36V1.027L5.333 7.693H0z" id="speaker"/>
+					      </svg>
+					    </div>
+					    <div class="volume-controls hidden">
+					      <div class="slider" data-direction="vertical">
+					        <div class="progress">
+					          <div class="pin" id="volume-pin" data-method="changeVolume"></div>
+					        </div>
+					      </div>
+					    </div>
+					  </div>
+					  
+					  <audio crossorigin>
+					    <source src="{{MEDIA_URL}}{{ tracks.0.music }}" type="audio/mpeg">
+					  </audio>
+					</div>
+					</div>
+
+					<div class="row">
+						<div class="col m12" style="display: block; max-height: 500px; overflow: scroll; overflow-x: hidden;">
+					      <table>
+					        <tbody>
+				        	{% for track in tracks %}
+					          <tr>
+					            <td><a href="{{MEDIA_URL}}{{ track.music }}">{{ track.title }}</a></td>
+					            <td>
+					            	<a class="grey-text text-darken-3" href="{{MEDIA_URL}}{{ track.music }}">
+					            		<i class="material-icons ">file_download</i>
+					            	</a>
+				            	</td>
+					            <td><i class="material-icons">playlist_add</i></td>
+					          </tr>
+				        	{% endfor %}
+					        </tbody>
+					      </table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col s3">
+			<div class="card-panel"></div>
+		</div>
+		<div class="col s1"></div>
+	</div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{% static 'js/player.js' %}"></script>
+</html>
